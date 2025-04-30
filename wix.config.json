@@ -1,0 +1,5 @@
+{
+  "$schema": "https://dev.wix.com/wix-cli/schemas/wix-config.json",
+  "appId": "72b72143-c2f3-4411-9e29-d674cec6e51d",
+  "projectId": "smart-dip"
+}
