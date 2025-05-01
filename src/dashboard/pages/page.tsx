@@ -27,30 +27,23 @@ import {
 
 
 export default function Index() {
-  useEffect(() => {
-    console.log("Test5");
-  }, []);
-  //const [allProducts, setAllProducts] = useState<products.Product[]>([]);
-  //const [nonDiscountedProducts, setNonDiscountedProducts] = useState<products.Product[]>([]);
   const [candidates, setCandidates] = useState<products.Product[]>([]);
   const [selectedId, setSelectedId] = useState<string>('');
   const [error, setError] = useState<Error | null>(null);
   const [loading, setLoading] = useState(true);
 
-  // 1) discount mode: PERCENT or AMOUNT
+  // Discount mode: PERCENT or AMOUNT
   const [discountMode, setDiscountMode] = useState<products.DiscountType.PERCENT
     | products.DiscountType.AMOUNT>(products.DiscountType.PERCENT);
-  // 2) the numeric value entered by user
+  // The numeric value entered by user
   const [discountValue, setDiscountValue] = useState<string>('');
 
   useEffect(() => {
-    console.log("MorTs");
     async function MorTs() {
+      console.log("Test 1");
       try {
         const allProducts = await getAllProducts();
-        // setAllProducts(allProducts);
         const nonDiscountedProducts = await filterOutDiscounted(allProducts);
-        // setNonDiscountedProducts(nonDiscountedProducts);
         const candidates = getHighestPricedNonDiscounted(nonDiscountedProducts);
         setCandidates(candidates);
       } catch (err) {
@@ -60,8 +53,9 @@ export default function Index() {
       }
     }
     MorTs();
+  }, [error]);
   //}, []);
-  }, [error, loading]);
+  //}, [error, loading]);
 
   // default selectedId to first candidate
   useEffect(() => {
@@ -82,23 +76,24 @@ export default function Index() {
     return <Text type="error">{error.message}</Text>;
   }
 
+  // TBD - should not reach this situation. The button in the dashboard plugin should be disabled in this case.
   if (!candidates.length) {
     return <Text>No eligible products found.</Text>;
   }
 
-  const dropdownOptions = candidates.map(p => ({
+  const dropdownOptions = candidates.map((p) => ({
     id: p._id ?? '',
     value: p.name ?? '',
   }));
 
-  const selectedProduct = candidates.find(p => p._id === selectedId);
+  const selectedProduct = candidates.find((p) => p._id === selectedId);
   const maxAmount = selectedProduct?.priceData?.price ?? 0;
 
   return (
     <WixDesignSystemProvider>
       <Page>
         <Page.Header
-          title="Product Discounter"
+          title="Smart Dip"
           subtitle="Give people a break on your most expensive product."
         />
         <Page.Content>
@@ -123,7 +118,6 @@ export default function Index() {
                     </Heading>
                   </Heading>
                 }
-              // prefix={<Icons.Tag />}
               />
               <Card.Divider />
               <Card.Content>
@@ -146,6 +140,7 @@ export default function Index() {
                     </Box>
                   ))}
               </Card.Content>
+              
             </Card>
           </Box>
 
@@ -176,8 +171,6 @@ export default function Index() {
                 size="small"
               />
             </FormField>
-
-            {/* 3) apply button – implement logic in onClick */}
             <Button
               priority="primary"
               disabled={!discountValue}
@@ -187,19 +180,10 @@ export default function Index() {
 
                 setLoading(true);
                 // Navigate to Products list:
-                dashboard.navigate({pageId: "0845ada2-467f-4cab-ba40-2f07c812343d"});
+                dashboard.navigate({ pageId: "0845ada2-467f-4cab-ba40-2f07c812343d" });
               }}
             >
               Apply Discount
-            </Button>
-            <Button
-              priority="primary"
-              disabled={!discountValue}
-              onClick={() => {
-                dashboard.navigate({pageId: "0845ada2-467f-4cab-ba40-2f07c812343d"});
-              }}
-            >
-              Finish manually
             </Button>
           </Box>
         </Page.Content>
