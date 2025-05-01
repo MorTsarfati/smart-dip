@@ -167,7 +167,12 @@ export default function Index() {
                 min={1}
                 max={discountMode === products.DiscountType.PERCENT ? 100 : maxAmount}
                 value={discountValue}
-                onChange={e => setDiscountValue(e.target.value)}
+                onChange={e => {
+                  setDiscountValue(e.target.value);
+                  console.log("Target: " + e.target.value);
+                  console.log("State1: " + discountValue);
+                }
+              }
                 size="small"
               />
             </FormField>
@@ -175,12 +180,14 @@ export default function Index() {
               priority="primary"
               disabled={!discountValue}
               onClick={async () => {
+                console.log("State2: " + discountValue);
+                console.log("Discount mode and value: " + discountMode + ", " + discountValue);
                 await applyDiscountForProduct(selectedId, discountMode, Number(discountValue));
                 // setSelectedId(''); // TBD - do it only after getting a success reply for discount
 
-                setLoading(true);
+                //setLoading(true);
                 // Navigate to Products list:
-                dashboard.navigate({ pageId: "0845ada2-467f-4cab-ba40-2f07c812343d" });
+                dashboard.navigate({ pageId: "0845ada2-467f-4cab-ba40-2f07c812343d"}, {displayMode: "main"});
               }}
             >
               Apply Discount
