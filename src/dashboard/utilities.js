@@ -1,6 +1,6 @@
 import { products } from '@wix/stores';
 
-/* ---------- function 1: collects all products ---------- */
+/* ---------- Collects all products ---------- */
 export async function getAllProducts() {
   const allProducts = [];
 
@@ -18,7 +18,7 @@ export async function getAllProducts() {
   return allProducts;
 }
 
-/* ----- helper for function 2: checks if product is already discounted ----- */
+/* ----- helper for filterOutDiscounted: Checks if product is already discounted ----- */
 function isProductDiscounted(p) {
   // There is no discount if type or value are null
   if (!(p.discount?.type && p.discount?.value))
@@ -34,12 +34,12 @@ function isProductDiscounted(p) {
   );
 }
 
-/* ---------- function 2: filters out all discounted products ---------- */
+/* ---- Filters out all discounted products ----- */
 export async function filterOutDiscounted(productsArray) {
   return productsArray.filter((p) => !isProductDiscounted(p));
 }
 
-/* ----- function 3: finds highest-priced non-discounted product(s) in an array ----- */
+/* ----- Finds highest-priced non-discounted product(s) in an array ----- */
 export function getHighestPricedNonDiscounted(nonDiscountedProducts) {
   let maxPrice = 0;
   const mostExpensiveProducts = [];
@@ -60,6 +60,7 @@ export function getHighestPricedNonDiscounted(nonDiscountedProducts) {
   return mostExpensiveProducts;
 }
 
+/* ---- Applies discount for a product, given its _id and discount selections ---- */
 export function applyDiscountForProduct(productId, discountType, discountValue) {
   products.updateProduct(productId, {
     discount: { type: discountType, value: discountValue },
