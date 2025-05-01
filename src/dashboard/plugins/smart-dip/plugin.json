@@ -1,0 +1,6 @@
+{
+  "$schema": "https://dev.wix.com/wix-cli/schemas/dashboard-plugin.json",
+  "id": "93ccf223-6309-46d4-b40a-35b3e147cbc6",
+  "title": "SmartDip",
+  "extends": "3ca518a6-8ae7-45aa-8cb9-afb3da945081"
+}
