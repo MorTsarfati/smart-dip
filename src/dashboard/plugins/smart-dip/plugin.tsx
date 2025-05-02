@@ -5,6 +5,7 @@ import {
   filterOutDiscounted,
   getHighestPricedNonDiscounted,
 } from '../../utilities'
+
 import {
   WixDesignSystemProvider,
   Loader,
@@ -33,7 +34,10 @@ export default function SmartDipPlugin() {
       } finally {
         setLoading(false);
       }
-    })
+    }) ();
+    return () => {
+      
+    }
   }, []);
 
   return (
@@ -48,8 +52,6 @@ export default function SmartDipPlugin() {
 
       {!loading && !error && !candidates &&
         (<Text>SmartDip can't discount any product because all products in the store are already discounted.</Text>)}
-
-      {<Text>No errors</Text>}
 
       {!loading && !error && candidates && (
         <>

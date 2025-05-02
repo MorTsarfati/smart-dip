@@ -22,9 +22,7 @@ import {
   filterOutDiscounted,
   getHighestPricedNonDiscounted,
   applyDiscountForProduct,
-} from '../../dashboard/utilities';
-
-
+} from '../utilities';
 
 export default function Index() {
   const [candidates, setCandidates] = useState<products.Product[]>([]);
