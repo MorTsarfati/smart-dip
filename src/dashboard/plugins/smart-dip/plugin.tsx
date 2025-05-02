@@ -12,8 +12,10 @@ import {
   Text,
   Box,
   Image,
+  Button,
 } from "@wix/design-system";
 import React from "react";
+import { dashboard } from "@wix/dashboard";
 
 export default function SmartDipPlugin() {
   const [loading, setLoading] = useState(true);
@@ -21,71 +23,76 @@ export default function SmartDipPlugin() {
   const [candidates, setCandidates] = useState<any[] | null>(null);
   const [error, setError] = useState<Error | null>(null);
 
-  useEffect(() => {
-    (async () => {
-      try {
-        const allProducts = await getAllProducts();
-        setAllProducts(allProducts);
-        const nonDiscountedProducts = await filterOutDiscounted(allProducts);
-        const candidates = getHighestPricedNonDiscounted(nonDiscountedProducts);
-        setCandidates(candidates);
-      } catch (err) {
-        setError(err as Error);
-      } finally {
-        setLoading(false);
-      }
-    }) ();
-    return () => {
-      
+  // Function for setting arrays of products (and states)
+  async function initialSet() {
+    try {
+      const allProducts = await getAllProducts();
+      setAllProducts(allProducts);
+      const nonDiscountedProducts = await filterOutDiscounted(allProducts);
+      const candidates = getHighestPricedNonDiscounted(nonDiscountedProducts);
+      setCandidates(candidates);
+    } catch (err) {
+      setError(err as Error);
+    } finally {
+      setLoading(false);
     }
+  }
+  useEffect(() => {
+    initialSet();
   }, []);
+
+  // Component displaying selected product
+  function ProductCard({ product }: { product: products.Product }) {
+    const productUrl = product.media?.mainMedia?.image?.url ?? '';
+    const productName = product.name;
+    const productPrice = product.priceData?.formatted?.price ?? 0;
+    return (
+      <Box direction="vertical" gap="12px" padding="24px">
+        <Text size="medium" weight="bold">
+          Most expensive product eligible for discount (currently not discounted)
+        </Text>
+        <Box gap="12px" align="center">
+          <Image width={60} height={60} src={productUrl} fit="cover" />
+          <Box direction="vertical">
+            <Text>{productName}</Text>
+            <Text secondary>{productPrice}</Text>
+          </Box>
+        </Box>
+      </Box>
+    );
+  }
 
   return (
     <WixDesignSystemProvider>
-      {loading && <Loader size="small" />}
-      {!loading && error
-        && (<Text skin="error">Failed to load products: {error.message}</Text>
+      <Box>
+        {loading && <Loader size="small" />}
+        {!loading && error
+          && (<Text skin="error">Failed to load products: {error.message}</Text>
+          )}
+
+        {!loading && !error && !allProducts &&
+          (<Text>SmartDip can't discount any product because there are no products in the store.</Text>)}
+
+        {!loading && !error && !candidates &&
+          (<Text>SmartDip can't discount any product because all products in the store are already discounted.</Text>)}
+
+        {!loading && !error && candidates && (
+          <>
+            <ProductCard product={candidates[0]} />
+            <Button
+              priority="primary"
+              onClick={() => {
+                dashboard.navigate({ pageId: "c231bfb2-f7b9-4a79-956e-61694768c7d5" });
+              }}
+            >
+              Give people a break
+            </Button>
+          </>
         )}
-
-      {!loading && !error && !allProducts &&
-        (<Text>SmartDip can't discount any product because there are no products in the store.</Text>)}
-
-      {!loading && !error && !candidates &&
-        (<Text>SmartDip can't discount any product because all products in the store are already discounted.</Text>)}
-
-      {!loading && !error && candidates && (
-        <>
-          <ProductCard product={candidates[0]} />
-        </>
-      )}
+      </Box>
     </WixDesignSystemProvider>
   )
 }
-
-
-function ProductCard({ product }: { product: products.Product }) {
-  const productUrl = product.media?.mainMedia?.image?.url ?? '';
-  const productName = product.name;
-  const productPrice = product.priceData?.formatted?.price ?? 0;
-
-  return (
-    <Box direction="vertical" gap="12px" padding="24px">
-      <Text size="medium" weight="bold">
-        Most expensive product eligible for discount (currently not discounted)
-      </Text>
-      <Box gap="12px" align="center">
-        <Image width={60} height={60} src={productUrl} fit="cover" />
-        <Box direction="vertical">
-          <Text>{productName}</Text>
-          <Text secondary>{productPrice}</Text>
-        </Box>
-      </Box>
-    </Box>
-  );
-}
-
-
-
 
 /*
 

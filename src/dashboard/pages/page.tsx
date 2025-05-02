@@ -73,7 +73,9 @@ export default function Index() {
 
   // TBD - should not reach this situation. The button in the dashboard plugin should be disabled in this case.
   if (!candidates.length) {
-    return <Text>No eligible products found.</Text>;
+    dashboard.navigate({ pageId: "0845ada2-467f-4cab-ba40-2f07c812343d" }, { displayMode: "main" });
+    // go to dashboard plugin page ("revert")
+    return <Text>No eligible products found.</Text>; // TBD - don't need this, or provide a button to navigate instead.
   }
 
   const dropdownOptions = candidates.map((p) => ({
@@ -101,13 +103,15 @@ export default function Index() {
         />
         <Page.Content>
           {/* product selection dropdown */}
-          <Box marginBottom="12px">
-            <Dropdown
-              selectedId={selectedId}
-              onSelect={({ id }) => setSelectedId(String(id))}
-              options={dropdownOptions}
-            />
-          </Box>
+          {candidates.length > 1 &&
+            (<Box marginBottom="12px">
+              <Dropdown
+                selectedId={selectedId}
+                onSelect={({ id }) => setSelectedId(String(id))}
+                options={dropdownOptions}
+              />
+            </Box>)
+          }
           {/* the card showing the selected product */}
           <Box gap="5px" direction="vertical">
             <Card>
@@ -174,9 +178,6 @@ export default function Index() {
               disabled={!isValidDiscount(discountMode, Number(discountValue), maxAmount)}
               onClick={async () => {
                 await applyDiscountForProduct(selectedId, discountMode, Number(discountValue));
-                // setSelectedId(''); // TBD - do it only after getting a success reply for discount
-
-                //setLoading(true);
                 // Navigate to Products list:
                 dashboard.navigate({ pageId: "0845ada2-467f-4cab-ba40-2f07c812343d" }, { displayMode: "main" });
               }}
