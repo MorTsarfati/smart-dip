@@ -62,7 +62,6 @@ export function getHighestPricedNonDiscounted(nonDiscountedProducts) {
 
 /* ---- Applies discount for a product, given its _id and discount selections ---- */
 export async function applyDiscountForProduct(productId, discountType, discountValue) {
-  console.log("TYPE: " + typeof(discountValue) + ", VALUE:" + discountValue);
   await products.updateProduct(productId, {
     discount: { type: discountType, value: discountValue },
   });
