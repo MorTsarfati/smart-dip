@@ -3,10 +3,11 @@ import { products } from '@wix/stores';
 /* ---------- Collects all products ---------- */
 export async function getAllProducts() {
   const allProducts = [];
+  const QUERY_LIMIT = 100;
 
   let page = await products
     .queryProducts()
-    .limit(100)
+    .limit(QUERY_LIMIT)
     .find();
 
   while (true) {
@@ -20,17 +21,14 @@ export async function getAllProducts() {
 
 /* ----- helper for filterOutDiscounted: Checks if product is already discounted ----- */
 function isProductDiscounted(p) {
-  // There is no discount if type or value are null
-  if (!(p.discount?.type && p.discount?.value))
-    return false;
-
-  const pType = p.discount.type;
-  const pValue = p.discount.value;
-
+  const pDiscountType = p.discount?.type;
+  const pDiscountValue = p.discount?.value;
+  
   return (
-    (pType === products.DiscountType.AMOUNT
-      || pType === products.DiscountType.PERCENT)
-    && (pValue > 0)
+    (pDiscountType && pDiscountValue)
+    && (pDiscountType === products.DiscountType.AMOUNT
+      || pDiscountType === products.DiscountType.PERCENT)
+    && (pDiscountValue > 0)
   );
 }
 
