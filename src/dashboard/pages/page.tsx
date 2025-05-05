@@ -63,7 +63,7 @@ export default function Index() {
     document.addEventListener('visibilitychange', handleVisibilityChange);
     return () => document.removeEventListener('visibilitychange', handleVisibilityChange);
   }, []);
-  
+
   // default selectedId to first candidate
   useEffect(() => {
     if (candidates.length > 0) {
@@ -109,7 +109,6 @@ export default function Index() {
                         : "This is the most expensive non-discounted product."}
                     </Heading>
                   </>
-
                 }
               />
               <Card.Divider />
@@ -185,18 +184,25 @@ export default function Index() {
                             >
                             </NumberInput>
                           </Box>
-                          <Box>
-                            <Button
-                              priority="primary"
-                              disabled={!isValidDiscount()}
-                              onClick={async () => {
-                                await applyDiscountForProduct(selectedId, discountMode, discountValue);
-                                dashboard.navigate({ pageId: "0845ada2-467f-4cab-ba40-2f07c812343d" }, { displayMode: "main" });
-                              }}
-                            >
-                              Apply Discount
-                            </Button>
-                          </Box>
+                          <Button
+                            priority="primary"
+                            disabled={!isValidDiscount()}
+                            onClick={async () => {
+                              await applyDiscountForProduct(selectedId, discountMode, discountValue);
+                              dashboard.navigate({ pageId: "0845ada2-467f-4cab-ba40-2f07c812343d" }, { displayMode: "main" });
+                            }}
+                          >
+                            Apply Discount
+                          </Button>
+                          <Button
+                            skin="standard"
+                            priority="secondary"
+                            onClick={() => {
+                              dashboard.navigate({ pageId: "0845ada2-467f-4cab-ba40-2f07c812343d" }, { displayMode: "main" })
+                            }}
+                          >
+                            Regretting? Back to Products page
+                          </Button>
                         </Box>
                       </Box>
                     </Box>
